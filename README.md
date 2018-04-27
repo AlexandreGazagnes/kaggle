@@ -1,12 +1,12 @@
 # Kaggle
 
 
-My kaggle work, scripts and notebooks, for kernerls and competitions
+My kaggle work, scripts and notebooks, for kernels and competitions
 
 
-Competitions : 
-	House prices : advanced regression techniques
-	Titanic : machine learnin from disaster
+* Competitions : 
+	* House prices : advanced regression techniques
+	* Titanic : machine learnin from disaster
 
-Kernels : 
-	My first kern
+* Kernels : 
+	My first kernel (nothing outstanding)
