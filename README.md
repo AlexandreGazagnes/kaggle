@@ -1,7 +1,7 @@
 # Kaggle
 
 
-My kaggle work, scripts and notebooks, for kernels and competitions
+My Kaggle work, scripts and notebooks, for kernels and competitions
 
 
 * Competitions : 
