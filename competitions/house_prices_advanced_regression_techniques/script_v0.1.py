@@ -9,7 +9,7 @@
 
 
 
-# v0.1 brute force approche with Ridge Regression 
+# v1.2 brute force approche with Linear and polynomial regresion 
 # notinhg good just a firt try
 # best is yet to come ! 
 
@@ -27,12 +27,14 @@ from scipy import stats
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, RidgeCV, Ridge, HuberRegressor
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.linear_model import LinearRegression, RidgeCV, Ridge, \
+								ElasticNet, LassoCV, LassoLarsCV, HuberRegressor
 from sklearn.utils import shuffle
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import Pipeline
+
 
 
 
@@ -90,10 +92,9 @@ X_test = X_test.loc[:, my_features]
 
 # data cleaning : drop na from X_test
 # filling with mean 
+for col in X_test.columns : 
+	X_test[col] = X_test[col].fillna(X_test[col].median())
 
-X_test["p_TotSurf"] = X_test["p_TotSurf"].fillna(X_test["p_TotSurf"].mean())
-X_test["GarageArea"] = X_test["GarageArea"].fillna(X_test["GarageArea"].mean())
-X_test["p_TotalBath"] = X_test["p_TotalBath"].fillna(X_test["p_TotalBath"].mean())
 
 	# print("DF TRAIN")
 	# na_col = 0
@@ -120,11 +121,15 @@ X_test["p_TotalBath"] = X_test["p_TotalBath"].fillna(X_test["p_TotalBath"].mean(
 # 	Regression 
 ##########################################################
 
+polynomial_features = PolynomialFeatures(degree=3, include_bias=True)
+linear_regression = LinearRegression()
 
-model = RidgeCV(normalize=True, cv=40)
+model = Pipeline([("polynomial_features", polynomial_features),
+				 ("linear_regression", linear_regression)])
 model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
 
+y_pred = model.predict(X_test)
+y_pred = y_pred.round(2)
 	# print(len(y_pred))
 
 
