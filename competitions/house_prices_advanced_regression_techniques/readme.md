@@ -14,5 +14,5 @@ Directories :
 
 * scripts : 	various scripts used to predict target values, very few comments, no prints and no graphs, see related kernel for more information;
 
-* submissions 	saved submited datasests;
+* submissions :	saved submited datasests;
 
