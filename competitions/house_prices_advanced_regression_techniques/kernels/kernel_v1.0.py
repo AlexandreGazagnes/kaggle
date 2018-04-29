@@ -257,19 +257,19 @@ if PRT :
 
 
 
-# bivariate analysis with standardizing data
+	# bivariate analysis with standardizing data
 
-saleprice_scaled = StandardScaler().fit_transform(df_train['SalePrice'][:,np.newaxis])
-low_range = saleprice_scaled[saleprice_scaled[:,0].argsort()][:10]
-high_range= saleprice_scaled[saleprice_scaled[:,0].argsort()][-10:]
+	saleprice_scaled = StandardScaler().fit_transform(df_train['SalePrice'][:,np.newaxis])
+	low_range = saleprice_scaled[saleprice_scaled[:,0].argsort()][:10]
+	high_range= saleprice_scaled[saleprice_scaled[:,0].argsort()][-10:]
 
-if PLT : 
-	print_t("Outliers, bivariate analysis")
-	var = 'GrLivArea'
-	data = pd.concat([df_train['SalePrice'], df_train[var]], axis=1)
-	data.plot.scatter(	x=var, y='SalePrice', ylim=(0,800000), marker=".", 
-						xticks=range(0, 7000, 300))
-	plt.show()
+	if PLT : 
+		print_t("Outliers, bivariate analysis")
+		var = 'GrLivArea'
+		data = pd.concat([df_train['SalePrice'], df_train[var]], axis=1)
+		data.plot.scatter(	x=var, y='SalePrice', ylim=(0,800000), marker=".", 
+							xticks=range(0, 7000, 300))
+		plt.show()
 
 
 # deleting outliers 
