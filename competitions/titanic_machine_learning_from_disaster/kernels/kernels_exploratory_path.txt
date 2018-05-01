@@ -1,0 +1,11 @@
+1 - Try to use various Classifier, Logistic, SVC, Decission Trees etc etc
+2 - Try to add a vote classifier with various Classifier
+3 - Focus on Age : 
+	- Try to separate features with/without Age and apply separate computtation, then regroup results
+	- Try to have a more acurate fillna stategy, using random(mu, sigma + skew and kurtosis
+	- Try to ehnace our Age Score and update Kernel with a y=x2 comment
+4 - Try to work on a Categorical/Subcategorcial path : 
+	- Fare is a sub cat of Pclass ?
+	- is there a relevant relation between Sib, Parch, Alone AND Survived
+5 - Find new approch regarding the problem
+

@@ -443,8 +443,8 @@ train_df["Fare"].astype("int16")
 test_df["Fare"] = pd.cut(test_df["Fare"], 10, labels=range(10))
 test_df["Fare"].astype("int16")
 
-# train_df = train_df.drop(["Fare"], axis=1)
-# test_df = test_df.drop(["Fare"], axis=1)
+train_df = train_df.drop(["Fare"], axis=1)
+test_df = test_df.drop(["Fare"], axis=1)
 
 
 train_df.head()
@@ -512,27 +512,42 @@ y_test.shape
 
 
 
-
-gbc = GradientBoostingClassifier()
-params = {	"n_estimators" : 	[10, 25, 50, 75, 100], 
-			"learning_rate" : 	np.logspace(-3, 3, 6),
+# def meta params
+gbc = GradientBoostingClassifier()	
+params = {	"n_estimators" : 	[10, 25, 50, 75, 100, 200], 
+			"learning_rate" : 	np.logspace(-3, 2, 5),
 			"loss" : 			["deviance", "exponential"],
 			"max_features" : 	["auto", "log2"],
-			"warm_start" : [True, False]}
+			"warm_start" : 		[True, False]}
 
 
+best_params = {'max_features': ['auto'], 'loss': ['deviance'], 'n_estimators': [50], 'warm_start': [True], 'learning_rate': [0.01]}
 
-ggbc = GridSearchCV(gbc, params, cv= 10, scoring="accuracy")
+
+# launch and fit
+ggbc = GridSearchCV(gbc, best_params, cv= 10, scoring="accuracy")
 ggbc.fit(X_train, y_train)
-y_pred = ggbc.predict(X_test)
+
+
+# print results
 score = ggbc.score(X_test, y_test)
 print(score)
 print(ggbc.best_params_)
 print(ggbc.best_estimator_)
 
+
+# just to be sure :) :) 
+y_pred = ggbc.predict(X_test)
 errors = y_pred + y_test
 errors_rate = len([i for i in errors if i ==1]) /len(y_pred)
 print(errors_rate)
-
 print(score+errors_rate)
 
+
+# make pred
+y_sub = ggbc.predict(test_df)
+
+# submit pred
+sub = pd.concat([pd.Series(range(892, 892 + len(y_sub)), name="PassengerId"), pd.Series(y_sub, name="Survived")], axis=1)
+
+sub.to_csv("submission.csv", index=False)
