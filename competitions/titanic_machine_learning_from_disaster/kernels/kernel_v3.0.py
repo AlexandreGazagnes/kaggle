@@ -260,6 +260,8 @@ test_df.loc[152, ]
 
 # lets now deal with age,
 # we will inpute random age rearding normal distribution
+data = test_df.append(train_df.drop(["Survived"], axis=1), ignore_index=True)
+data.head()
 
 data = train_df[~train_df["Age"].isnull()]
 
@@ -271,12 +273,13 @@ data.describe()
 
 # we define our mean and std for each subclass
 coef = dict()
-coef["female", 1] =  (34, 13)
-coef["female", 2] = (28,12)
-coef["female", 3] =  (21, 12)
-coef["male", 1] = (41, 15)
-coef["male", 2] = (30,15)
-coef["male", 3] = (26, 12)
+coef["female", 1] =  (37.037594, 14.272460)
+coef["female", 2] = (27.499223,12.911747)
+coef["female", 3] =  (22.185329, 12.205254)
+coef["male", 1] = (41.029272, 14.578529)
+coef["male", 2] = (30.815380,13.977400)
+coef["male", 3] = (25.962264, 11.682415)
+
 
 
 # we have to verify that each distribution is effectively normal : 
@@ -408,25 +411,25 @@ test_df = test_df.drop(["Name", "Ticket", "Cabin", "PassengerId"], axis=1)
 
 def shape_age(x) : 
 	if x <=3 : 
-		return 0 
+		return 10 
 	if  3< x <=7 : 
-		return 1
+		return 10
 	if  7< x <=10 : 
-		return 2
+		return 10
 	if  10< x <=14 : 
-		return 3
-	if  14< x <=20 : 
-		return 4
-	if  20< x <=30 : 
-		return 5
-	if  30< x <=40 : 
-		return 6
-	if  40< x <=50 : 
-		return 7
-	if  50< x <=60 : 
 		return 8
+	if  14< x <=20 : 
+		return 6
+	if  20< x <=30 : 
+		return 4
+	if  30< x <=40 : 
+		return 2
+	if  40< x <=50 : 
+		return 2
+	if  50< x <=60 : 
+		return 4
 	if  60< x <=70 : 
-		return 9
+		return 8
 	return 10
 
 train_df["Age"] = train_df["Age"].apply(shape_age)
@@ -440,8 +443,8 @@ train_df["Fare"].astype("int16")
 test_df["Fare"] = pd.cut(test_df["Fare"], 10, labels=range(10))
 test_df["Fare"].astype("int16")
 
-train_df = train_df.drop(["Fare"], axis=1)
-test_df = test_df.drop(["Fare"], axis=1)
+# train_df = train_df.drop(["Fare"], axis=1)
+# test_df = test_df.drop(["Fare"], axis=1)
 
 
 train_df.head()
@@ -469,43 +472,67 @@ y_test.shape
 #      First step Random Forest
 ############################################################################
 
-rf = RandomForestClassifier()
-params = {"n_jobs" : [300, 500, 700, 1000], 
-			"oob_score" : [True, False], 
-			"bootstrap":[True,], # False	 
-			"warm_start" : [True, False],
-			"max_features" : ["auto", "log2"]}
+# rf = RandomForestClassifier()
+# params = {"n_jobs" : [300, 500, 700, 1000], 
+# 			"oob_score" : [True, False], 
+# 			"bootstrap":[True,], # False	 
+# 			"warm_start" : [True, False],
+# 			"max_features" : ["auto", "log2"]}
 
-best_params = {'warm_start': [True], 'oob_score': [True], 'bootstrap':[ True,] ,
-				'max_features': ['auto'], 'n_jobs': [1000]}
+# best_params = {'warm_start': [True], 'oob_score': [True], 'bootstrap':[ True,] ,
+# 				'max_features': ['auto'], 'n_jobs': [300, 500, 700, 900, 1000]}
 
 
 
-grf = GridSearchCV(rf, best_params, cv= 10, scoring="accuracy")
-grf.fit(X_train, y_train)
-y_pred = grf.predict(X_test)
-score = grf.score(X_test, y_test)
+# grf = GridSearchCV(rf, best_params, cv= 10, scoring="accuracy")
+# grf.fit(X_train, y_train)
+# y_pred = grf.predict(X_test)
+# score = grf.score(X_test, y_test)
+# print(score)
+# print(grf.best_params_)
+# print(grf.best_estimator_)
+
+# errors = y_pred + y_test
+# errors_rate = len([i for i in errors if i ==1]) /len(y_pred)
+# print(errors_rate)
+
+# print(score+errors_rate)
+
+
+# y_sub = grf.predict(test_df)
+
+
+# y_sub
+
+
+# sub = pd.concat([pd.Series(range(892, 892 + len(y_sub)), name="PassengerId"), pd.Series(y_sub, name="Survived")], axis=1)
+
+# sub.to_csv("submission.csv", index=False)
+
+
+
+
+
+gbc = GradientBoostingClassifier()
+params = {	"n_estimators" : 	[10, 25, 50, 75, 100], 
+			"learning_rate" : 	np.logspace(-3, 3, 6),
+			"loss" : 			["deviance", "exponential"],
+			"max_features" : 	["auto", "log2"],
+			"warm_start" : [True, False]}
+
+
+
+ggbc = GridSearchCV(gbc, params, cv= 10, scoring="accuracy")
+ggbc.fit(X_train, y_train)
+y_pred = ggbc.predict(X_test)
+score = ggbc.score(X_test, y_test)
 print(score)
-print(grf.best_params_)
-print(grf.best_estimator_)
+print(ggbc.best_params_)
+print(ggbc.best_estimator_)
 
 errors = y_pred + y_test
 errors_rate = len([i for i in errors if i ==1]) /len(y_pred)
 print(errors_rate)
 
 print(score+errors_rate)
-
-
-y_sub = grf.predict(test_df)
-
-
-y_sub
-
-
-sub = pd.concat([pd.Series(range(892, 892 + len(y_sub)), name="PassengerId"), pd.Series(y_sub, name="Survived")], axis=1)
-
-sub.to_csv("submission.csv", index=False)
-
-
-
 
