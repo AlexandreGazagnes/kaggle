@@ -55,29 +55,42 @@ SHOW = True
 ############################################################################
 
 
-#
-#
-#
+# In this First part, we will explore missin and NanN values
+# We will trying to spot what features are missing, and their respicve impact 
+# regarding dataset quality
+
+
+# first "classic" method
+print(train_df.isnull().all())
+print(train_df.isnull().any())
 
 
 # explore null/Nan values by col
 total = train_df.isnull().sum().sort_values(ascending=False)
 percent = (train_df.isnull().sum()/train_df.isnull().count()).sort_values(ascending=False)
-pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+print(pd.concat([total, round(100 * percent,2)], axis=1, keys=['Total', 'Percent']))
 
 
-# Cabin, 77% is a very high score, we would have to drop this feature
-# Embarked : 0.2% very very low effect on the dataset, we will choose to fill the Nan with the most common value of the feature
-# Age, this isproblematic because age is an very important feature, and 20% is a prety high score
-# we could, for instance, fill missing values with the mean age of each sub category sorting by fare, sex, survived and pclass ...
+# Cabin, 77% is a very high score, maybe we would have to drop this feature
+# Embarked : 0.2% very very low effect on the dataset, we will choose to fill 
+# the Nan with the most common value of the feature
+# Age, this is a very problematic topic because age is an seems to be a very 
+# important feature, and 20% is a prety high score
+# we could, for instance, fill missing values with the mean age of each sub 
+#category sorting by fare, sex, survived and pclass ...
 
 # what about the testing dataset?
+
+
+# first "classic" method
+print(test_df.isnull().all())
+print(test_df.isnull().any())
 
 
 # explore null/Nan values by col
 total = test_df.isnull().sum().sort_values(ascending=False)
 percent = (test_df.isnull().sum()/test_df.isnull().count()).sort_values(ascending=False)
-pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+print(pd.concat([total, round(100 * percent,2)], axis=1, keys=['Total', 'Percent']))
 
 
 # we sould definitively delete "Cabin" ?
@@ -85,28 +98,61 @@ pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
 
 # just to be sure ...
 data = train_df.loc[ : ,["Cabin", "Pclass", "Fare"]]
-data.head(30).sort_values(by='Pclass', ascending=True)
+print(data.head(30).sort_values(by='Pclass', ascending=True))
 
+# we could think that Pclass 3 is just a global common room or something like
+# that, maybe we could confirm that with few web research but keep focus for now
 
-# we could think that Pclass 3 is just a global common room or something like that, maybe we could confirm that with few web research but keep focus for now
 # who are people without "Embarked" ?
-train_df[train_df["Embarked"].isnull()]
+print(train_df[train_df["Embarked"].isnull()])
 
 
-# 1% come from Q, and for the rest 50/50 from C and S
-# we will respect that proportion
-train_df.loc[61, "Embarked"] = "C"
+# with Pclass
+data = train_df[train_df['Pclass'] == 1]
+data = pd.DataFrame({"count":data["Embarked"].value_counts()})
+data["percent"] = round(100 * data["count"] / data["count"].sum(), 2)
+print(data)
+
+# without Pclass
+data = pd.DataFrame({"count":train_df["Embarked"].value_counts()})
+data["percent"] = round(100 * data["count"] / data["count"].sum(), 2)
+print(data)
+
+
+# First idea : Prob says "S"
+# WWho are  they? "Icard Miss amelie and Stone, Mrs George Nelson Evevlyn"
+# we could suppose it sound more "English" than "French"
+# same ticket, same cabin, ok same Embarked value
+# but ... why not from Ireland? 
+# let's check this
+
+data = train_df[train_df['Embarked'] == "Q"]
+data = pd.DataFrame({"count":data["Pclass"].value_counts()})
+data["percent"] = round(100 * data["count"] / data["count"].sum(), 2)
+print(data)
+
+# Wow Wow Wow 93% of people comming from Ireland were in Pclass 3 ? 
+# such an info regarding massive emigration from irland to the US :) 
+
+train_df.loc[61, "Embarked"] = "S"
 train_df.loc[829, "Embarked"] = "S"
-train_df["Embarked"].isnull().all() == False
+print(train_df["Embarked"].notnull().all())
+print(test_df["Embarked"].notnull().all())
 
 
-# ok, what about test_df
-test_df[test_df["Fare"].isnull()]
+# ok, what about test_df Fare
+print(test_df[test_df["Fare"].isnull()])
+
+# ok, is null  means NAN, but everybody paid for their ticket?
+print(test_df[test_df["Fare"] == 0].sort_values(by="Pclass"))
 
 
 # ouch we have a major issue ... 
 # and for train_df
-train_df[train_df["Fare"] == 0].sort_values(by="Pclass")
+print(train_df[train_df["Fare"] == 0].sort_values(by="Pclass"))
+
+
+raise ValueError("\n\n{0}\n\tPause\n{0}\n\n".format(40*"*"))
 
 
 # re ouch ... what a mess 
