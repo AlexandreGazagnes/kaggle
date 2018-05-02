@@ -50,8 +50,7 @@ SHOW = True
 
 
 
-############################################################################
-#       Fihting against Missing / NaN values
+# Missing / NaN values
 ############################################################################
 
 
@@ -93,6 +92,10 @@ percent = (test_df.isnull().sum()/test_df.isnull().count()).sort_values(ascendin
 print(pd.concat([total, round(100 * percent,2)], axis=1, keys=['Total', 'Percent']))
 
 
+
+# Cabin
+############################################################################
+
 # we sould definitively delete "Cabin" ?
 # we will use the same technique for Age and Fare than above
 
@@ -102,6 +105,11 @@ print(data.head(30).sort_values(by='Pclass', ascending=True))
 
 # we could think that Pclass 3 is just a global common room or something like
 # that, maybe we could confirm that with few web research but keep focus for now
+
+
+
+# Emabrked
+############################################################################
 
 # who are people without "Embarked" ?
 print(train_df[train_df["Embarked"].isnull()])
@@ -138,6 +146,11 @@ train_df.loc[61, "Embarked"] = "S"
 train_df.loc[829, "Embarked"] = "S"
 print(train_df["Embarked"].notnull().all())
 print(test_df["Embarked"].notnull().all())
+
+
+
+# Fare
+############################################################################
 
 
 # ok, what about test_df Fare
@@ -196,9 +209,11 @@ test_df[test_df["Fare"].isnull()]
 test_df.loc[152, ]
 
 
-########################################################################
-raise ValueError("\n\n{0}\n\tPause\n{0}\n\n".format(40*"*"))
-########################################################################
+# Age
+############################################################################
+
+
+# Strategy 1 : Grouping age from test_df and train_df
 
 
 # lets now deal with age,
@@ -223,6 +238,11 @@ coef["male", 1] = (41.029272, 14.578529)
 coef["male", 2] = (30.815380,13.977400)
 coef["male", 3] = (25.962264, 11.682415)
 
+
+
+########################################################################
+raise ValueError("\n\n{0}\n\tPause\n{0}\n\n".format(40*"*"))
+########################################################################
 
 
 # we have to verify that each distribution is effectively normal : 
