@@ -4,7 +4,7 @@
 
 
 ################################################################################
-#       Titanic : Full Intro/Tutorial for Data Science ?
+#       Titanic : Feature Engineering 
 ################################################################################
 
 
@@ -152,8 +152,6 @@ print(test_df[test_df["Fare"] == 0].sort_values(by="Pclass"))
 print(train_df[train_df["Fare"] == 0].sort_values(by="Pclass"))
 
 
-raise ValueError("\n\n{0}\n\tPause\n{0}\n\n".format(40*"*"))
-
 
 # re ouch ... what a mess 
 # after few web resarch, we can leran than these people wer "sent by shipbuilders Harland & Wolff to accompany the Titanic on her maiden voyage." what a good gift ! :) :) 
@@ -164,7 +162,7 @@ raise ValueError("\n\n{0}\n\tPause\n{0}\n\n".format(40*"*"))
 data = train_df.groupby("Pclass")
 data = data.describe()["Fare"]
 my_fare = (data["mean"] + data["50%"])/2
-my_fare
+print(my_fare)
 
 
 # now we can fill Fare with my_fare
@@ -189,7 +187,6 @@ for c in [1,2,3] :
 	test_df.loc[mask, "Fare"] = int(my_fare[c])
 
 
-
 test_df[test_df["Fare"] == 0.0]
 test_df["Fare"].isnull().all() == False
 
@@ -197,6 +194,11 @@ test_df["Fare"].isnull().all() == False
 test_df[test_df["Fare"].isnull()]
 
 test_df.loc[152, ]
+
+
+########################################################################
+raise ValueError("\n\n{0}\n\tPause\n{0}\n\n".format(40*"*"))
+########################################################################
 
 
 # lets now deal with age,

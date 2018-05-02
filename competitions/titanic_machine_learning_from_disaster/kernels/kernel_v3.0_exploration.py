@@ -4,7 +4,7 @@
 
 
 ################################################################################
-#       Titanic : Full Intro/Tutorial for Data Science ?
+#       Titanic : First round of exploration 
 ################################################################################
 
 
@@ -47,11 +47,6 @@ test_df = pd.read_csv("../datasets/test.csv")
 
 SHOW = True
 
-
-
-############################################################################
-#        First round of exploration 
-############################################################################
 
 
 # in this part we will print and buid graph with a brutal approch. we won't try to have a complex analysis but just to 
@@ -151,5 +146,4 @@ data = train_df.loc[:, ["Fare", "Survived", "Sex"]]
 data["cat_fare"] = pd.cut(data["Fare"], 100, labels=range(100))
 data = data[["cat_fare", "Survived"]].groupby(['cat_fare'],as_index=False).mean()
 _ = sns.barplot(x='cat_fare', y='Survived', data=data)
-
 
