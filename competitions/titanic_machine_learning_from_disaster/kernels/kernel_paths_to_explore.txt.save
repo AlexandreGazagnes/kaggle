@@ -1,0 +1,4 @@
+1 try to use various classifiers with pest first feature engineering set
+2 try to use vote system betwtweem them
+3 focus on Age feature : 
+ - try to separate with and without age and do 2 random forest and the concat results
